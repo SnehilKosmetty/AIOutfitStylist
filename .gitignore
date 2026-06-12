@@ -48,3 +48,7 @@ logs/
 *.db
 *.sqlite
 *.sqlite3
+
+# Runtime user media
+src/**/wwwroot/uploads/
+src/**/wwwroot/generated/
