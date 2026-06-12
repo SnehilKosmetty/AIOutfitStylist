@@ -27,7 +27,7 @@ public sealed class AdminController(IAdminService adminService, IOptions<AdminOp
     {
         if (_options.AllowedEmails.Length == 0)
         {
-            return true;
+            return false;
         }
 
         var email = User.FindFirstValue(ClaimTypes.Email) ?? User.FindFirstValue("email");

@@ -3,6 +3,7 @@ using AIOutfitStylist.Application.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace AIOutfitStylist.Api.Controllers;
 
@@ -11,10 +12,12 @@ public sealed class AuthController(
     IValidator<RegisterRequest> registerValidator,
     IValidator<LoginRequest> loginValidator,
     IValidator<GoogleLoginRequest> googleLoginValidator,
+    IValidator<UpdateProfileRequest> updateProfileValidator,
     IValidator<SendRegistrationOtpRequest> otpValidator) : ApiControllerBase
 {
     [HttpPost("send-registration-otp")]
     [AllowAnonymous]
+    [EnableRateLimiting("auth")]
     public async Task<IActionResult> SendRegistrationOtp(SendRegistrationOtpRequest request, CancellationToken cancellationToken)
     {
         var validation = await otpValidator.ValidateAsync(request, cancellationToken);
@@ -38,6 +41,7 @@ public sealed class AuthController(
 
     [HttpPost("register")]
     [AllowAnonymous]
+    [EnableRateLimiting("auth")]
     public async Task<IActionResult> Register(RegisterRequest request, CancellationToken cancellationToken)
     {
         var validation = await registerValidator.ValidateAsync(request, cancellationToken);
@@ -61,6 +65,7 @@ public sealed class AuthController(
 
     [HttpPost("login")]
     [AllowAnonymous]
+    [EnableRateLimiting("auth")]
     public async Task<IActionResult> Login(LoginRequest request, CancellationToken cancellationToken)
     {
         var validation = await loginValidator.ValidateAsync(request, cancellationToken);
@@ -84,6 +89,7 @@ public sealed class AuthController(
 
     [HttpPost("google")]
     [AllowAnonymous]
+    [EnableRateLimiting("auth")]
     public async Task<IActionResult> GoogleLogin(GoogleLoginRequest request, CancellationToken cancellationToken)
     {
         var validation = await googleLoginValidator.ValidateAsync(request, cancellationToken);
@@ -117,6 +123,21 @@ public sealed class AuthController(
     [Authorize]
     public async Task<IActionResult> UpdateProfile(UpdateProfileRequest request, CancellationToken cancellationToken)
     {
+        var validation = await updateProfileValidator.ValidateAsync(request, cancellationToken);
+        if (!validation.IsValid)
+        {
+            var problemDetails = new ValidationProblemDetails();
+            foreach (var failure in validation.Errors)
+            {
+                if (!problemDetails.Errors.ContainsKey(failure.PropertyName))
+                {
+                    problemDetails.Errors[failure.PropertyName] = [];
+                }
+                problemDetails.Errors[failure.PropertyName] = problemDetails.Errors[failure.PropertyName].Append(failure.ErrorMessage).ToArray();
+            }
+            return new BadRequestObjectResult(problemDetails);
+        }
+
         var result = await authService.UpdateProfileAsync(UserId, request, cancellationToken);
         return result.Succeeded ? Ok(result.Value) : BadRequest(new { message = result.Error });
     }

@@ -38,7 +38,15 @@ public sealed class SmtpEmailSender(IOptions<EmailOptions> options, ILogger<Smtp
             client.Credentials = new NetworkCredential(_options.UserName, _options.Password);
         }
 
-        await client.SendMailAsync(message, cancellationToken);
-        return true;
+        try
+        {
+            await client.SendMailAsync(message, cancellationToken);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to send email to {Email}.", to);
+            return false;
+        }
     }
 }

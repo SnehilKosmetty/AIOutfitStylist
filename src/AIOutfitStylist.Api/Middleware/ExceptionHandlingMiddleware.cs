@@ -19,7 +19,7 @@ public sealed class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Ex
             await context.Response.WriteAsync(JsonSerializer.Serialize(new
             {
                 title = "Request failed",
-                detail = ex.Message,
+                detail = "The request could not be completed.",
                 status = context.Response.StatusCode,
                 traceId = context.TraceIdentifier
             }));

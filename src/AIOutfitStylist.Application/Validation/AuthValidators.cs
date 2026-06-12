@@ -52,6 +52,22 @@ public sealed class LoginRequestValidator : AbstractValidator<LoginRequest>
     }
 }
 
+public sealed class UpdateProfileRequestValidator : AbstractValidator<UpdateProfileRequest>
+{
+    public UpdateProfileRequestValidator()
+    {
+        RuleFor(x => x.FirstName).NotEmpty().MaximumLength(80);
+        RuleFor(x => x.LastName).NotEmpty().MaximumLength(80);
+        RuleFor(x => x.Age).InclusiveBetween(13, 120).When(x => x.Age.HasValue);
+        RuleFor(x => x.Height).InclusiveBetween(4.0m, 7.5m).When(x => x.Height.HasValue);
+        RuleFor(x => x.Weight).InclusiveBetween(50m, 700m).When(x => x.Weight.HasValue);
+        RuleFor(x => x.ClothingSize).MaximumLength(40);
+        RuleFor(x => x.PreferredStyle).MaximumLength(120);
+        RuleFor(x => x.BudgetMin).GreaterThanOrEqualTo(0).When(x => x.BudgetMin.HasValue);
+        RuleFor(x => x.BudgetMax).GreaterThanOrEqualTo(x => x.BudgetMin).When(x => x.BudgetMin.HasValue && x.BudgetMax.HasValue);
+    }
+}
+
 public sealed class GoogleLoginRequestValidator : AbstractValidator<GoogleLoginRequest>
 {
     public GoogleLoginRequestValidator()

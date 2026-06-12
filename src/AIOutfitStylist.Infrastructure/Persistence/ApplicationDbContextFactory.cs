@@ -24,12 +24,8 @@ public sealed class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Ap
             var appSettingsPath = Path.Combine(current.FullName, "src", "AIOutfitStylist.Api", "appsettings.json");
             if (File.Exists(appSettingsPath))
             {
-                using var stream = File.OpenRead(appSettingsPath);
-                using var document = JsonDocument.Parse(stream);
-                var connectionString = document.RootElement
-                    .GetProperty("ConnectionStrings")
-                    .GetProperty("DefaultConnection")
-                    .GetString();
+                var localSettingsPath = Path.Combine(current.FullName, "src", "AIOutfitStylist.Api", "appsettings.Local.json");
+                var connectionString = ReadDefaultConnection(localSettingsPath) ?? ReadDefaultConnection(appSettingsPath);
 
                 if (!string.IsNullOrWhiteSpace(connectionString))
                 {
@@ -41,5 +37,23 @@ public sealed class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Ap
         }
 
         throw new InvalidOperationException("DefaultConnection was not found in src/AIOutfitStylist.Api/appsettings.json.");
+    }
+
+    private static string? ReadDefaultConnection(string path)
+    {
+        if (!File.Exists(path))
+        {
+            return null;
+        }
+
+        using var stream = File.OpenRead(path);
+        using var document = JsonDocument.Parse(stream);
+        if (!document.RootElement.TryGetProperty("ConnectionStrings", out var connectionStrings) ||
+            !connectionStrings.TryGetProperty("DefaultConnection", out var defaultConnection))
+        {
+            return null;
+        }
+
+        return defaultConnection.GetString();
     }
 }

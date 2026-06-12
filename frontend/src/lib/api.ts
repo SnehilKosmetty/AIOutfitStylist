@@ -2,10 +2,10 @@ import axios from 'axios';
 import type { AdminDashboard, AuthResponse, OtpResponse, Outfit, PhotoAnalysis, PhotoUploadResponse, UserProfile } from '../types';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? 'https://localhost:7132'
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? ''
 });
 
-export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? 'https://localhost:7132';
+export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
 
 export function toAbsoluteUrl(url?: string) {
   if (!url) return '';

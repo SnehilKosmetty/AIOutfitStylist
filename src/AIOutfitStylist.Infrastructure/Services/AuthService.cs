@@ -49,7 +49,12 @@ public sealed class AuthService(
             $"Your AI Outfit Stylist OTP is {code}. It is valid for 5 minutes.",
             cancellationToken);
 
-        return Result<SendRegistrationOtpResponse>.Success(new SendRegistrationOtpResponse(normalizedEmail, verification.ExpiresAtUtc, sent ? null : code));
+        if (!sent)
+        {
+            return Result<SendRegistrationOtpResponse>.Failure("Email delivery is not configured.");
+        }
+
+        return Result<SendRegistrationOtpResponse>.Success(new SendRegistrationOtpResponse(normalizedEmail, verification.ExpiresAtUtc));
     }
 
     public async Task<Result<AuthResponse>> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)

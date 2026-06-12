@@ -19,7 +19,7 @@ public sealed record RegisterRequest(
 
 public sealed record SendRegistrationOtpRequest(string Email);
 
-public sealed record SendRegistrationOtpResponse(string Email, DateTime ExpiresAtUtc, string? DevelopmentOtp);
+public sealed record SendRegistrationOtpResponse(string Email, DateTime ExpiresAtUtc);
 
 public sealed record LoginRequest(string Email, string Password);
 

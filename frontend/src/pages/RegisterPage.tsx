@@ -38,13 +38,11 @@ export function RegisterPage() {
   const navigate = useNavigate();
   const form = useForm<FormValues>({ resolver: zodResolver(schema), defaultValues: { gender: 0 } });
   const [showPassword, setShowPassword] = useState(false);
-  const [devOtp, setDevOtp] = useState<string>();
   const watchedPassword = form.watch('password') ?? '';
   const strength = passwordScore(String(watchedPassword));
   const sendOtp = useMutation({
     mutationFn: apiClient.sendRegistrationOtp,
-    onSuccess: (data) => {
-      setDevOtp(data.developmentOtp);
+    onSuccess: () => {
       toast.success('OTP sent. It is valid for 5 minutes.');
     },
     onError: (error) => toast.error(getApiErrorMessage(error))
@@ -69,7 +67,6 @@ export function RegisterPage() {
             <MailCheck size={16} /> {sendOtp.isPending ? 'Sending...' : 'Send OTP'}
           </button>
         </div>
-        {devOtp && <p className="rounded-md bg-teal-50 px-3 py-2 text-sm text-teal-800 dark:bg-teal-950 dark:text-teal-200">Development OTP: {devOtp}</p>}
         <input className="input" placeholder="6 digit OTP" maxLength={6} {...form.register('otpCode')} />
         <div className="relative">
           <input className="input pr-12" placeholder="Password" type={showPassword ? 'text' : 'password'} {...form.register('password')} />

@@ -24,7 +24,6 @@ export type AuthResponse = {
 export type OtpResponse = {
   email: string;
   expiresAtUtc: string;
-  developmentOtp?: string;
 };
 
 export type AdminDashboard = {
