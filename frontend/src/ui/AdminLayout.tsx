@@ -1,9 +1,18 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, LogOut, Shirt } from 'lucide-react';
+import { useEffect } from 'react';
 import { clearAuth } from '../lib/auth';
 
 export function AdminLayout() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const hadDarkClass = document.documentElement.classList.contains('dark');
+    document.documentElement.classList.add('dark');
+    return () => {
+      document.documentElement.classList.toggle('dark', hadDarkClass);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
@@ -14,10 +23,10 @@ export function AdminLayout() {
             <span>Admin Dashboard</span>
           </Link>
           <div className="flex items-center gap-2">
-            <Link className="button-secondary" to="/">
+            <Link className="inline-flex items-center justify-center gap-2 rounded-md border border-slate-700 bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-slate-800" to="/">
               <Shirt size={16} /> User App
             </Link>
-            <button className="button-secondary px-3" onClick={() => { clearAuth(); navigate('/login'); }} aria-label="Sign out">
+            <button className="inline-flex items-center justify-center gap-2 rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm font-semibold text-slate-100 transition hover:bg-slate-800" onClick={() => { clearAuth(); navigate('/admin/login'); }} aria-label="Sign out">
               <LogOut size={18} />
             </button>
           </div>

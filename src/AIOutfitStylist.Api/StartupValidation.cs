@@ -26,24 +26,27 @@ public static class StartupValidation
             throw new InvalidOperationException("Admin:AllowedEmails must contain at least one admin email.");
         }
 
-        if (!email.IsConfigured)
+        if (app.Environment.IsProduction())
         {
-            throw new InvalidOperationException("Email SMTP settings must be configured because registration OTP delivery requires email.");
-        }
+            if (!email.IsConfigured)
+            {
+                throw new InvalidOperationException("Email SMTP settings must be configured because registration OTP delivery requires email.");
+            }
 
-        if (string.IsNullOrWhiteSpace(openAi.ApiKey))
-        {
-            throw new InvalidOperationException("OpenAI:ApiKey must be configured.");
-        }
+            if (string.IsNullOrWhiteSpace(openAi.ApiKey))
+            {
+                throw new InvalidOperationException("OpenAI:ApiKey must be configured.");
+            }
 
-        if (string.IsNullOrWhiteSpace(google.ClientId))
-        {
-            throw new InvalidOperationException("GoogleAuth:ClientId must be configured.");
-        }
+            if (string.IsNullOrWhiteSpace(google.ClientId))
+            {
+                throw new InvalidOperationException("GoogleAuth:ClientId must be configured.");
+            }
 
-        if (string.IsNullOrWhiteSpace(blob.ConnectionString))
-        {
-            throw new InvalidOperationException("AzureBlobStorage:ConnectionString must be configured.");
+            if (string.IsNullOrWhiteSpace(blob.ConnectionString))
+            {
+                throw new InvalidOperationException("AzureBlobStorage:ConnectionString must be configured.");
+            }
         }
     }
 }

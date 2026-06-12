@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { apiClient, getApiErrorMessage } from '../lib/api';
 import { persistAuth } from '../lib/auth';
+import { isAdminUser } from '../lib/admin';
 
 type GoogleCredentialResponse = {
   credential?: string;
@@ -24,9 +25,11 @@ declare global {
 
 type Props = {
   text: 'signin_with' | 'signup_with' | 'continue_with';
+  redirectTo?: string;
+  requireAdmin?: boolean;
 };
 
-export function GoogleSignInButton({ text }: Props) {
+export function GoogleSignInButton({ text, redirectTo = '/', requireAdmin = false }: Props) {
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
@@ -34,7 +37,13 @@ export function GoogleSignInButton({ text }: Props) {
     mutationFn: apiClient.googleLogin,
     onSuccess: (data) => {
       persistAuth(data);
-      navigate('/');
+      if (requireAdmin && !isAdminUser(data.user)) {
+        toast.error('This account is not allowed to access Admin.');
+        navigate('/login', { replace: true });
+        return;
+      }
+
+      navigate(redirectTo, { replace: true });
     },
     onError: (error) => toast.error(getApiErrorMessage(error))
   });
