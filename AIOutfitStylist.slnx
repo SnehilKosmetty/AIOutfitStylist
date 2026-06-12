@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AIOutfitStylist.Api/AIOutfitStylist.Api.csproj" />
+    <Project Path="src/AIOutfitStylist.Application/AIOutfitStylist.Application.csproj" />
+    <Project Path="src/AIOutfitStylist.Domain/AIOutfitStylist.Domain.csproj" />
+    <Project Path="src/AIOutfitStylist.Infrastructure/AIOutfitStylist.Infrastructure.csproj" />
+  </Folder>
+</Solution>

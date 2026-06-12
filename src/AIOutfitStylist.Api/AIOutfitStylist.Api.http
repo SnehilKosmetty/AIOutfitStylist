@@ -1,0 +1,6 @@
+@AIOutfitStylist.Api_HostAddress = http://localhost:5001
+
+GET {{AIOutfitStylist.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

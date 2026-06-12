@@ -1,0 +1,50 @@
+bin/
+obj/
+node_modules/
+dist/
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.tsbuildinfo
+work/
+outputs/
+
+# Local environment secrets
+.env
+.env.*
+!.env.example
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# ASP.NET local configuration and secrets
+appsettings.Local.json
+appsettings.Development.local.json
+appsettings.Production.json
+src/**/appsettings.Local.json
+src/**/appsettings.Development.local.json
+src/**/appsettings.Production.json
+secrets.json
+*.secrets.json
+
+# Publish profiles and deployment credentials
+*.pubxml
+*.pubxml.user
+PublishProfiles/
+**/Properties/ServiceDependencies/
+
+# Certificates and private keys
+*.pfx
+*.p12
+*.pem
+*.key
+*.crt
+
+# Logs and local database files
+*.log
+logs/
+*.db
+*.sqlite
+*.sqlite3
